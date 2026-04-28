@@ -1,0 +1,183 @@
+type UserId = principal;
+type Timestamp = int;
+type Subscription = 
+ record {
+   address: text;
+   amount: nat;
+   email: text;
+   id: nat;
+   kitStatus: KitStatus;
+   name: text;
+   orderNumber: OrderNumber;
+   phone: text;
+   planType: PlanType;
+   purchaseDate: Timestamp;
+   userId: UserId;
+ };
+type ShoppingOrder = 
+ record {
+   createdAt: Timestamp;
+   id: nat;
+   items: vec OrderItem;
+   orderNumber: OrderNumber;
+   totalAmount: nat;
+   userId: UserId;
+ };
+type ProductCategory = 
+ variant {
+   DiabetesFood;
+   ExerciseEquipment;
+   Medicine;
+ };
+type Product = 
+ record {
+   category: ProductCategory;
+   description: text;
+   id: nat;
+   imageUrl: opt text;
+   name: text;
+   price: nat;
+ };
+type PlanType = 
+ variant {
+   OneYear;
+   SixMonth;
+   ThreeMonth;
+ };
+type OrderNumber = text;
+type OrderItem = 
+ record {
+   productId: nat;
+   quantity: nat;
+   unitPrice: nat;
+ };
+type MessageRole = 
+ variant {
+   Assistant;
+   User;
+ };
+type KitStatus = 
+ variant {
+   Pending;
+   Received;
+ };
+type ExerciseSession = 
+ record {
+   dayOfWeek: text;
+   description: text;
+   duration: nat;
+   id: nat;
+   instructor: text;
+   name: text;
+   timeSlot: text;
+   youtubeThumbnail: text;
+   youtubeUrl: text;
+ };
+type ExerciseBooking = 
+ record {
+   bookingDate: Timestamp;
+   id: nat;
+   sessionId: nat;
+   status: BookingStatus;
+   timeSlot: text;
+   userId: UserId;
+ };
+type Doctor = 
+ record {
+   availableSlots: vec text;
+   email: text;
+   id: nat;
+   name: text;
+   phone: text;
+   specialty: text;
+ };
+type DietLogEntry = 
+ record {
+   calories: nat;
+   foodName: text;
+   grams: float64;
+   id: nat;
+   quantity: text;
+   timestamp: Timestamp;
+   userId: UserId;
+ };
+type ChatMessage = 
+ record {
+   content: text;
+   id: nat;
+   role: MessageRole;
+   timestamp: Timestamp;
+   userId: UserId;
+ };
+type CallType = 
+ variant {
+   NormalCall;
+   VideoCall;
+ };
+type BookingStatus = 
+ variant {
+   Booked;
+   Cancelled;
+ };
+type AppointmentStatus = 
+ variant {
+   Cancelled;
+   Confirmed;
+ };
+type Appointment = 
+ record {
+   callType: CallType;
+   confirmationNumber: text;
+   createdAt: Timestamp;
+   doctorId: nat;
+   id: nat;
+   slot: text;
+   status: AppointmentStatus;
+   userId: UserId;
+ };
+service : {
+  adminGetAllAppointments: () -> (vec Appointment) query;
+  adminGetAllBookings: () -> (vec ExerciseBooking) query;
+  adminGetAllDietLogs: () -> (vec DietLogEntry) query;
+  adminGetAllOrders: () -> (vec ShoppingOrder) query;
+  adminGetAllSubscriptions: () -> (vec Subscription) query;
+  adminLogin: (email: text, password: text) -> (bool);
+  bookAppointment: (doctorId: nat, slot: text, callType: CallType) ->
+   (Appointment);
+  bookSession: (sessionId: nat) -> (ExerciseBooking);
+  cancelAppointment: (appointmentId: nat) -> (bool);
+  cancelBooking: (bookingId: nat) -> (bool);
+  deleteDietLog: (entryId: nat) -> (bool);
+  getAllUsers: () -> (vec record {
+                            createdAt: int;
+                            email: text;
+                            name: text;
+                          });
+  getCallerPrincipal: () -> (principal) query;
+  getDoctors: () -> (vec Doctor) query;
+  getMyAppointments: () -> (vec Appointment) query;
+  getMyBookings: () -> (vec ExerciseBooking) query;
+  getMyChatHistory: () -> (vec ChatMessage) query;
+  getMyDietLogs: () -> (vec DietLogEntry) query;
+  getMyOrders: () -> (vec ShoppingOrder) query;
+  getMySubscriptions: () -> (vec Subscription) query;
+  getProducts: () -> (vec Product) query;
+  getSessions: () -> (vec ExerciseSession) query;
+  getUserCount: () -> (nat) query;
+  isAdmin: () -> (bool) query;
+  logFoodItem: (foodName: text, quantity: text) -> (DietLogEntry);
+  loginUser: (email: text, password: text) -> (variant {
+                                                 err: text;
+                                                 ok: text;
+                                               });
+  markKitReceived: (subscriptionId: nat) -> (bool);
+  placeOrder: (items: vec OrderItem) -> (ShoppingOrder);
+  registerUser: (name: text, email: text, password: text) ->
+   (variant {
+      err: text;
+      ok: text;
+    });
+  sendChatMessage: (userMessage: text) -> (text);
+  subscribePlan: (planType: PlanType, name: text, phone: text, email: 
+   text, address: text) -> (Subscription);
+}

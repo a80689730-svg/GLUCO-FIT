@@ -1,0 +1,222 @@
+// Version: 1.0.0
+type AppointmentStatus__949193971 = {#Cancelled; #Confirmed};
+type Appointment__77617247 =
+  {
+    callType : CallType__913882337;
+    confirmationNumber : Text;
+    createdAt : Timestamp__301639476;
+    doctorId : Nat;
+    id : Nat;
+    slot : Text;
+    status : AppointmentStatus__949193971;
+    userId : UserId__158757552
+  };
+type BookingStatus__87972053 = {#Booked; #Cancelled};
+type CallType__913882337 = {#NormalCall; #VideoCall};
+type ChatMessage__559859432 =
+  {
+    content : Text;
+    id : Nat;
+    role : MessageRole__512297421;
+    timestamp : Timestamp__301639476;
+    userId : UserId__158757552
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type DietLogEntry__948589119 =
+  {
+    calories : Nat;
+    foodName : Text;
+    grams : Float;
+    id : Nat;
+    quantity : Text;
+    timestamp : Timestamp__301639476;
+    userId : UserId__158757552
+  };
+type Doctor__86565007 =
+  {
+    availableSlots : [Text];
+    email : Text;
+    id : Nat;
+    name : Text;
+    phone : Text;
+    specialty : Text
+  };
+type ExerciseBooking__241866399 =
+  {
+    bookingDate : Timestamp__301639476;
+    id : Nat;
+    sessionId : Nat;
+    status : BookingStatus__87972053;
+    timeSlot : Text;
+    userId : UserId__158757552
+  };
+type ExerciseSession__1065929598 =
+  {
+    dayOfWeek : Text;
+    description : Text;
+    duration : Nat;
+    id : Nat;
+    instructor : Text;
+    name : Text;
+    timeSlot : Text;
+    youtubeThumbnail : Text;
+    youtubeUrl : Text
+  };
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type KitStatus__511386522 = {#Pending; #Received};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type MessageRole__512297421 = {#Assistant; #User};
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type OrderItem__272254640 =
+  {productId : Nat; quantity : Nat; unitPrice : Nat};
+type OrderNumber__562551665 = Text;
+type PlanType__184600388 = {#OneYear; #SixMonth; #ThreeMonth};
+type ProductCategory__450784950 =
+  {#DiabetesFood; #ExerciseEquipment; #Medicine};
+type Product__207891883 =
+  {
+    category : ProductCategory__450784950;
+    description : Text;
+    id : Nat;
+    imageUrl : ?Text;
+    name : Text;
+    price : Nat
+  };
+type ShoppingOrder__971140592 =
+  {
+    createdAt : Timestamp__301639476;
+    id : Nat;
+    items : [OrderItem__272254640];
+    orderNumber : OrderNumber__562551665;
+    totalAmount : Nat;
+    userId : UserId__158757552
+  };
+type Subscription__68545750 =
+  {
+    address : Text;
+    amount : Nat;
+    email : Text;
+    id : Nat;
+    kitStatus : KitStatus__511386522;
+    name : Text;
+    orderNumber : OrderNumber__562551665;
+    phone : Text;
+    planType : PlanType__184600388;
+    purchaseDate : Timestamp__301639476;
+    userId : UserId__158757552
+  };
+type Timestamp__301639476 = Int;
+type UserId__158757552 = Principal;
+type User__314921034 =
+  {createdAt : Int; email : Text; name : Text; passwordHash : Text};
+actor {
+  stable appointments :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Appointment__77617247]];
+      var elementIndex : Nat__490723111
+    };
+  stable chatMessages :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?ChatMessage__559859432]];
+      var elementIndex : Nat__490723111
+    };
+  stable dietLogs :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?DietLogEntry__948589119]];
+      var elementIndex : Nat__490723111
+    };
+  stable doctors :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Doctor__86565007]];
+      var elementIndex : Nat__490723111
+    };
+  stable exerciseBookings :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?ExerciseBooking__241866399]];
+      var elementIndex : Nat__490723111
+    };
+  stable exerciseSessions :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?ExerciseSession__1065929598]];
+      var elementIndex : Nat__490723111
+    };
+  stable ic :
+    actor {
+      http_request :
+        shared {
+                 body : ?Blob;
+                 headers : [{name : Text; value : Text}];
+                 is_replicated : ?Bool;
+                 max_response_bytes : ?Nat64;
+                 method : {#get; #head; #post};
+                 transform :
+                   ?{
+                      context : Blob;
+                      function :
+                        shared query {
+                                       context : Blob;
+                                       response :
+                                         {
+                                           body : Blob;
+                                           headers :
+                                             [{name : Text; value : Text}];
+                                           status : Nat
+                                         }
+                                     } ->
+                          async
+                            {
+                              body : Blob;
+                              headers : [{name : Text; value : Text}];
+                              status : Nat
+                            }
+                    };
+                 url : Text
+               } ->
+          async
+            {
+              body : Blob;
+              headers : [{name : Text; value : Text}];
+              status : Nat
+            }
+    };
+  stable var nextAppointmentId : Nat;
+  stable var nextChatMessageId : Nat;
+  stable var nextDietLogId : Nat;
+  stable var nextExerciseBookingId : Nat;
+  stable var nextShoppingOrderId : Nat;
+  stable var nextSubscriptionId : Nat;
+  stable products :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Product__207891883]];
+      var elementIndex : Nat__490723111
+    };
+  stable shoppingOrders :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?ShoppingOrder__971140592]];
+      var elementIndex : Nat__490723111
+    };
+  stable subscriptions :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?Subscription__68545750]];
+      var elementIndex : Nat__490723111
+    };
+  stable usersMap :
+    {
+      var root : Node__46230540<Text, User__314921034>;
+      var size : Nat__490723111
+    }
+};

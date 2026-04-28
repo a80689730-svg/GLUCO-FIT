@@ -1,0 +1,25 @@
+{
+  "overview": "Gluco Fit is a comprehensive diabetes and health management web application. It helps users track glucose levels, log diet and calories, book doctor appointments, manage treatment plans, shop for diabetes-related products, and follow exercise sessions — all in one place.",
+  "features": [
+    "Glucose and calorie tracking",
+    "Diet logging with nutrition database",
+    "Doctor appointment booking",
+    "Treatment plan subscriptions (3/6/12 months)",
+    "Shopping for diabetes foods, medicines, and equipment",
+    "Exercise sessions with YouTube video integration",
+    "AI health chat assistant",
+    "User dashboard aggregating all health data",
+    "Admin dashboard monitoring all user activity",
+    "Role-based access for users and admins"
+  ],
+  "category": "health",
+  "tags": [
+    "diabetes",
+    "health",
+    "fitness",
+    "diet",
+    "telemedicine",
+    "wellness"
+  ],
+  "last_updated": "2026-04-27T13:02:10.703Z"
+}
